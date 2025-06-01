@@ -55,7 +55,7 @@
     <li class="nav-item">
         <a class="nav-link" href="data_pelanggan.php">
             <i class="fas fa-user-friends"></i>
-            <span>Data Pelanggan</span></a>
+            <span>Data Orderan</span></a>
     </li>
 
     <!-- Nav Item - Data Kurir -->
@@ -87,9 +87,16 @@
 
     <!-- Nav Item - Pembayaran -->
     <li class="nav-item">
-        <a class="nav-link" href="tarif_ongkir.php">
+        <a class="nav-link" href="data_tarif.php">
             <i class="fas fa-credit-card"></i>
-            <span> Data Wilayah & Tarif Ongkir</span></a>
+            <span> Tarif Ongkir</span></a>
+    </li>
+
+    <!-- Nav Item - Kecamatan -->
+    <li class="nav-item">
+        <a class="nav-link" href="data_wilayah.php">
+            <i class="fas fa-credit-card"></i>
+            <span> Data Wilayah</span></a>
     </li>
 
     <!-- Nav Item - Akun Pengguna -->

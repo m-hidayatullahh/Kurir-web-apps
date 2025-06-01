@@ -2,7 +2,7 @@
 include 'config/koneksi.php';
 
 if (!isset($_GET['id'])) {
-    header("Location: data_wilayah.php");
+    header("Location: data_tarif.php");
     exit;
 }
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $update_result = mysqli_query($conn, $update_query);
 
     if ($update_result) {
-        echo "<script>alert('Data berhasil diupdate!'); window.location='data_wilayah.php';</script>";
+        echo "<script>alert('Data berhasil diupdate!'); window.location='data_tarif.php';</script>";
         exit;
     } else {
         echo "Gagal update: " . mysqli_error($conn);
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        <a href="data_wilayah.php" class="btn btn-secondary">Batal</a>
+                        <a href="data_tarif.php" class="btn btn-secondary">Batal</a>
                     </form>
                 </div>
 
