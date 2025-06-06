@@ -2,38 +2,41 @@
 include 'config/koneksi.php';
 
 if (isset($_POST['konfirmasi'])) {
-    $id_order = $_POST['id_order'];
+    $id_order       = $_POST['id_order'];
     $id_kurir_jemput = $_POST['id_kurir_jemput'];
-    $id_kurir_antar = $_POST['id_kurir_antar'];
-    $nomor_resi = $_POST['nomor_resi'];
+    $id_kurir_antar  = $_POST['id_kurir_antar'];
+    $tarif_ongkir    = $_POST['tarif_ongkir'];
+    $nomor_resi      = $_POST['nomor_resi'];
+    $waktu_konfirmasi = date('Y-m-d H:i:s');
 
-    if ($id_kurir_jemput == $id_kurir_antar) {
-        echo "<script>
-            alert('Kurir jemput dan antar tidak boleh sama.');
-            history.back();
-        </script>";
-        exit;
+    // Ambil nama kurir jemput
+    $kurir_jemput = '-';
+    $result1 = mysqli_query($conn, "SELECT nama_kurir FROM tbl_data_kurir WHERE id_kurir = '$id_kurir_jemput'");
+    if ($row1 = mysqli_fetch_assoc($result1)) {
+        $kurir_jemput = $row1['nama_kurir'];
     }
 
-    $update = mysqli_query($conn, "
-        UPDATE tbl_orderan 
-        SET status = 'Terkonfirmasi', 
-            id_kurir_jemput = '$id_kurir_jemput',
-            id_kurir_antar = '$id_kurir_antar',
-            nomor_resi = '$nomor_resi'
-        WHERE id_order = '$id_order'
-    ");
+    // Ambil nama kurir antar
+    $kurir_antar = '-';
+    $result2 = mysqli_query($conn, "SELECT nama_kurir FROM tbl_data_kurir WHERE id_kurir = '$id_kurir_antar'");
+    if ($row2 = mysqli_fetch_assoc($result2)) {
+        $kurir_antar = $row2['nama_kurir'];
+    }
+$query = "UPDATE tbl_order_masuk SET 
+    kurir_jemput = '$kurir_jemput',
+    kurir_antar = '$kurir_antar',
+    tarif_ongkir = '$tarif_ongkir',
+    resi = '$nomor_resi',
+    status_order = 'terkonfirmasi',
+    waktu_konfirmasi = '$waktu_konfirmasi'
+WHERE id_order_masuk = '$id_order'";
 
-    if ($update) {
-        echo "<script>
-            alert('Order berhasil dikonfirmasi.');
-            window.location.href = 'data-pengiriman.php';
-        </script>";
+    if (mysqli_query($conn, $query)) {
+        echo "<script>alert('Order berhasil dikonfirmasi.'); window.location='data_order.php';</script>";
     } else {
-        echo "<script>
-            alert('Gagal mengkonfirmasi order.');
-            history.back();
-        </script>";
+        echo "<script>alert('Gagal mengkonfirmasi order.'); window.location='data_order.php';</script>";
     }
+} else {
+    header("Location: data_order.php");
 }
 ?>

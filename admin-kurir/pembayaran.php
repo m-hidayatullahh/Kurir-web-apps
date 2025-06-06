@@ -1,3 +1,60 @@
+<?php
+include 'config/koneksi.php';
+$uploaded_file = $target_dir = "img/bukti_tf_admin/";
+$status_upload = 'Belum upload';
+
+if (isset($_POST['id_order'])) {
+    $id_order = $_POST['id_order'];
+
+    // Ambil path file dari DB
+    $query = "SELECT bukti_transfer_admin FROM tbl_order_masuk WHERE id_order_masuk = '$id_order'";
+    $result = mysqli_query($conn, $query);
+    if ($row = mysqli_fetch_assoc($result)) {
+        if (!empty($row['bukti_transfer_admin'])) {
+            $uploaded_file = $row['bukti_transfer_admin'];
+            $status_upload = 'Sudah upload';
+        }
+    }
+}
+
+
+if (isset($_POST['uploadBukti'])) {
+    $id_order = $_POST['id_order'];
+ $target_dir = "img/bukti_tf_admin/";
+
+
+    // Cek apakah file diupload
+    if (!empty($_FILES['bukti_transfer_admin']['name'])) {
+        $file_name = basename($_FILES["bukti_transfer_admin"]["name"]);
+        $target_file = $target_dir . time() . '_' . $file_name;
+        $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        // Validasi file
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($file_type, $allowed_types)) {
+            if (move_uploaded_file($_FILES["bukti_transfer_admin"]["tmp_name"], $target_file)) {
+                // Simpan ke DB
+                $sql = "UPDATE tbl_order_masuk SET bukti_transfer_admin = '$target_file' WHERE id_order_masuk = '$id_order'";
+                if (mysqli_query($conn, $sql)) {
+                    echo "<script>alert('Bukti transfer berhasil diupload!'); window.location.href='pembayaran.php';</script>";
+                } else {
+                    echo "<script>alert('Gagal menyimpan ke database.');</script>";
+                }
+            } else {
+                echo "<script>alert('Gagal mengupload file ke server.');</script>";
+            }
+        } else {
+            echo "<script>alert('Format file tidak didukung. Gunakan JPG, PNG, atau GIF.');</script>";
+        }
+    } else {
+        echo "<script>alert('Pilih file terlebih dahulu.');</script>";
+    }
+}
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -26,16 +83,24 @@
                                     <form action="#" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
                                             <label for="id_order">Pilih ID Order</label>
+
                                             <select name="id_order" id="id_order" class="form-control"
                                                 onchange="isiDataPenerima()">
                                                 <option value="">-- Pilih --</option>
-                                                <option value="PKT001" data-nama="Budi Hartono" data-bank="Bank BRI"
-                                                    data-norek="1234567890">PKT001</option>
-                                                <option value="PKT002" data-nama="Siti Aminah" data-bank="Bank BCA"
-                                                    data-norek="9876543210">PKT002</option>
-                                                <option value="PKT003" data-nama="Dedi Supriadi"
-                                                    data-bank="Bank Mandiri" data-norek="4567891230">PKT003</option>
+                                                <?php
+    $query = "SELECT id_order_masuk, nama_penerima, bank_pengirim, no_rekening FROM tbl_order_masuk";
+    $result = mysqli_query($conn, $query);
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo '<option value="' . $row['id_order_masuk'] . '" 
+            data-nama="' . htmlspecialchars($row['nama_penerima']) . '" 
+            data-bank="' . htmlspecialchars($row['bank_pengirim']) . '" 
+            data-norek="' . htmlspecialchars($row['no_rekening']) . '">
+            ORDER #' . $row['id_order_masuk'] . '
+        </option>';
+    }
+    ?>
                                             </select>
+
                                         </div>
 
                                         <div class="form-group">
@@ -53,9 +118,11 @@
                                         <div class="form-group">
                                             <label for="bukti_transfer">Bukti Transfer</label>
                                             <input type="file" class="form-control-file" id="bukti_transfer"
-                                                accept="image/*">
+                                                name="bukti_transfer_admin" accept="image/*">
+
                                         </div>
-                                        <button type="submit" class="btn btn-success">Upload</button>
+                                        <button type="submit" name="uploadBukti" class="btn btn-success">Upload</button>
+
                                     </form>
                                 </div>
                             </div>
@@ -68,10 +135,30 @@
                                     <h6 class="m-0 font-weight-bold text-secondary">Preview Bukti Transfer</h6>
                                 </div>
                                 <div class="card-body text-center">
-                                    <img src="assets/img/bukti_dummy.jpg" class="img-fluid rounded"
-                                        style="max-height: 300px;" alt="Bukti Transfer">
-                                    <p class="mt-2 mb-0"><strong>Status:</strong> Belum upload</p>
+                                    <?php
+$preview_file = 'img/bukti_tf_admin/';
+$preview_status = 'Belum upload';
+
+
+if (!empty($_POST['id_order'])) {
+    $id_order = $_POST['id_order'];
+    $query = "SELECT bukti_transfer_admin FROM tbl_order_masuk WHERE id_order_masuk = '$id_order'";
+    $result = mysqli_query($conn, $query);
+    if ($row = mysqli_fetch_assoc($result)) {
+        if (!empty($row['bukti_transfer_admin'])) {
+            $preview_file = $row['bukti_transfer_admin'];
+            $preview_status = 'Sudah upload';
+        }
+    }
+}
+?>
+
+                                    <img src="<?= $preview_file ?>" class="img-fluid rounded" style="max-height: 300px;"
+                                        alt="Bukti Transfer">
+                                    <p class="mt-2 mb-0"><strong>Status:</strong> <?= $preview_status ?></p>
+
                                 </div>
+
                             </div>
                         </div>
                     </div>

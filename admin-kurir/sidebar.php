@@ -26,24 +26,18 @@
 
     <!-- Nav Item - Data Pengiriman -->
     <li class="nav-item">
-        <a class="nav-link" href="data-pengiriman.php">
+        <a class="nav-link" href="data-order.php">
             <i class="fas fa-truck-loading"></i>
             <span>Data Pengiriman</span></a>
     </li>
 
     <!-- Nav Item - Penugasan Kurir -->
     <li class="nav-item">
-        <a class="nav-link" href="penugasan_kurir.php">
+        <a class="nav-link" href="daftar_penugasan.php">
             <i class="fas fa-tasks"></i>
-            <span>Pilih Kurir</span></a>
+            <span>Data Orderan</span></a>
     </li>
 
-    <!-- Nav Item - Daftar Penugasan -->
-    <li class="nav-item">
-        <a class="nav-link" href="daftar_penugasan.php">
-            <i class="fas fa-clipboard-list"></i>
-            <span>Update paket</span></a>
-    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider" />
@@ -51,12 +45,12 @@
     <!-- Heading -->
     <div class="sidebar-heading">Manajemen Pengguna</div>
 
-    <!-- Nav Item - Data Pelanggan -->
+    <!-- Nav Item - Data Pelanggan
     <li class="nav-item">
         <a class="nav-link" href="data_pelanggan.php">
             <i class="fas fa-user-friends"></i>
             <span>Data Orderan</span></a>
-    </li>
+    </li> -->
 
     <!-- Nav Item - Data Kurir -->
     <li class="nav-item">

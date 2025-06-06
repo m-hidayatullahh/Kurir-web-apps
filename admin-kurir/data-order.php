@@ -1,19 +1,5 @@
 <?php
 include 'config/koneksi.php';
-
-$query = mysqli_query($conn, "
-    SELECT o.id_order, p.nama AS pengirim, pr.nama AS penerima,
-           o.harga_barang, o.status, o.nomor_resi, o.tanggal_order,
-           o.id_kurir_jemput, o.id_kurir_antar,
-           bayar.metode_pembayaran, bayar.status_pembayaran,
-           p.no_hp AS pengirim_hp, p.alamat_lengkap AS pengirim_alamat,
-           pr.no_hp AS penerima_hp, pr.alamat_lengkap AS penerima_alamat
-    FROM tbl_orderan o
-    JOIN tbl_pengirim p ON o.id_pengirim = p.id_pengirim
-    JOIN tbl_penerima pr ON o.id_penerima = pr.id_penerima
-    LEFT JOIN tbl_pembayaran bayar ON o.id_pembayaran = bayar.id_pembayaran
-    ORDER BY o.tanggal_order DESC
-");
 ?>
 
 <!DOCTYPE html>
@@ -42,77 +28,70 @@ $query = mysqli_query($conn, "
                                             <th>ID Order</th>
                                             <th>Pengirim</th>
                                             <th>Penerima</th>
-                                            <th>Status</th>
-                                            <th>Konfirmasi</th>
+                                            <th>Kurir Jemput</th>
+                                            <th>Kurir Antar</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php while ($data = mysqli_fetch_assoc($query)) : ?>
+                                        <?php
+                                        $sql = "SELECT * FROM tbl_order_masuk ORDER BY id_order_masuk DESC";
+                                        $query = $conn->query($sql);
+
+                                        while ($row = $query->fetch_assoc()):
+                                        $id = $row['id_order_masuk'];
+                                        $kode = 'ORD' . str_pad($id, 3, '0', STR_PAD_LEFT);
+                                        ?>
                                         <tr>
-                                            <td><?= $data['id_order']; ?></td>
-                                            <td><?= $data['pengirim']; ?></td>
-                                            <td><?= $data['penerima']; ?></td>
+                                            <td><?= htmlspecialchars($kode) ?></td>
+                                            <td><?= htmlspecialchars($row['nama_pengirim']) ?></td>
+                                            <td><?= htmlspecialchars($row['nama_penerima']) ?></td>
+                                            <td><?= htmlspecialchars($row['kurir_jemput']) ?></td>
+                                            <td><?= htmlspecialchars($row['kurir_antar']) ?></td>
                                             <td>
-                                                <?php
-                                                    if ($data['status'] == 'Menunggu Konfirmasi') {
-                                                        echo '<span class="badge badge-warning">Menunggu Konfirmasi</span>';
-                                                    } elseif ($data['status'] == 'Terkonfirmasi') {
-                                                        echo '<span class="badge badge-success">Terkonfirmasi</span>';
-                                                    } else {
-                                                        echo '<span class="badge badge-secondary">' . $data['status'] . '</span>';
-                                                    }
-                                                    ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($data['status'] == 'Menunggu Konfirmasi') : ?>
+                                                <!-- Tombol Konfirmasi tetap ada -->
                                                 <button class="btn btn-success btn-sm" data-toggle="modal"
-                                                    data-target="#modalKonfirmasi<?= $data['id_order']; ?>">
+                                                    data-target="#modalKonfirmasi<?= $id ?>">
                                                     <i class="fas fa-check"></i> Konfirmasi
                                                 </button>
-                                                <?php else : ?>
-                                                <button class="btn btn-secondary btn-sm" disabled>
-                                                    <i class="fas fa-check-double"></i> Sudah
-                                                </button>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <a href="detail_orderan.php?id=<?= $data['id_order']; ?>"
-                                                    class="btn btn-info btn-sm">
+                                                <!-- Tombol untuk melihat detail orderan -->
+                                                <a href="detail_order.php?id=<?= $id ?>" class="btn btn-info btn-sm">
                                                     <i class="fas fa-eye"></i> Lihat Detail
                                                 </a>
                                             </td>
                                         </tr>
 
-                                        <!-- Modal Konfirmasi untuk setiap Order -->
-                                        <div class="modal fade" id="modalKonfirmasi<?= $data['id_order']; ?>"
-                                            tabindex="-1" role="dialog" aria-labelledby="modalKonfirmasiLabel"
+                                        <!-- Modal Konfirmasi -->
+                                        <div class="modal fade" id="modalKonfirmasi<?= $id ?>" tabindex="-1"
+                                            role="dialog" aria-labelledby="modalKonfirmasiLabel<?= $id ?>"
                                             aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <form action="proses_konfirmasi.php" method="POST">
-                                                    <input type="hidden" name="id_order"
-                                                        value="<?= $data['id_order']; ?>">
+                                                    <input type="hidden" name="id_order" value="<?= $id ?>">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="modalKonfirmasiLabel">Konfirmasi
-                                                                Order #<?= $data['id_order']; ?></h5>
+                                                            <h5 class="modal-title" id="modalKonfirmasiLabel<?= $id ?>">
+                                                                Konfirmasi Order #<?= $kode ?></h5>
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
+                                                        <?php 
+                                                        $kurir_query = mysqli_query($conn, "SELECT * FROM tbl_data_kurir");
+                                                        $kurir_options = '';
+                                                        while ($kurir = mysqli_fetch_assoc($kurir_query)) {
+                                                            $kurir_options .= '<option value="' . $kurir['id_kurir'] . '">' . $kurir['nama_kurir'] . ' (' . $kurir['alamat'] . ')</option>';
+                                                        }
+                                                        ?>
+
                                                         <div class="modal-body">
                                                             <div class="form-group">
                                                                 <label for="id_kurir_jemput">Kurir Jemput</label>
                                                                 <select name="id_kurir_jemput" class="form-control"
                                                                     required>
                                                                     <option value="">-- Pilih Kurir Jemput --</option>
-                                                                    <?php
-                                                                        $kurirQuery = mysqli_query($conn, "SELECT * FROM tbl_data_kurir");
-                                                                        while ($k = mysqli_fetch_assoc($kurirQuery)) {
-                                                                            echo "<option value='{$k['id_kurir']}'>{$k['nama_kurir']}</option>";
-                                                                        }
-                                                                        ?>
+                                                                    <?= $kurir_options ?>
                                                                 </select>
                                                             </div>
                                                             <div class="form-group">
@@ -120,13 +99,14 @@ $query = mysqli_query($conn, "
                                                                 <select name="id_kurir_antar" class="form-control"
                                                                     required>
                                                                     <option value="">-- Pilih Kurir Antar --</option>
-                                                                    <?php
-                                                                        $kurirQuery2 = mysqli_query($conn, "SELECT * FROM tbl_data_kurir");
-                                                                        while ($k2 = mysqli_fetch_assoc($kurirQuery2)) {
-                                                                            echo "<option value='{$k2['id_kurir']}'>{$k2['nama_kurir']}</option>";
-                                                                        }
-                                                                        ?>
+                                                                    <?= $kurir_options ?>
                                                                 </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="tarif_ongkir">Tarif Ongkir</label>
+                                                                <input type="number" name="tarif_ongkir"
+                                                                    class="form-control" required
+                                                                    placeholder="Masukkan tarif ongkir">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="nomor_resi">Nomor Resi</label>
@@ -145,6 +125,7 @@ $query = mysqli_query($conn, "
                                                 </form>
                                             </div>
                                         </div>
+
                                         <?php endwhile; ?>
                                     </tbody>
                                 </table>
@@ -163,7 +144,7 @@ $query = mysqli_query($conn, "
     </div>
     <!-- End of Page Wrapper -->
 
-    <!-- Bootstrap core JavaScript -->
+    <!-- JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

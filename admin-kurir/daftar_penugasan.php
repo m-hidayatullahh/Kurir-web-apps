@@ -35,97 +35,55 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Dummy Data dengan form per baris -->
+                                        <?php
+                                        // Include connection to the database
+                                        include 'config/koneksi.php';
+
+                                        // Query to fetch data from the database
+                                        $sql = "SELECT * FROM tbl_order_masuk ORDER BY id_order_masuk DESC";
+                                        $query = $conn->query($sql);
+
+                                        // Loop through the results and display them
+                                        while ($row = $query->fetch_assoc()):
+                                            $id_order = $row['id_order_masuk'];
+                                            $kurir_jemput = $row['kurir_jemput'];
+                                            $kurir_antar = $row['kurir_antar'];
+                                            $resi = $row['resi'];
+                                            $status = ucfirst($row['status_order']); // Make status more readable
+                                            $waktu_konfirmasi = $row['waktu_konfirmasi'] ? date('d M Y, H:i', strtotime($row['waktu_konfirmasi'])) : '-';
+                                        ?>
                                         <tr>
-                                            <form action="#" method="POST">
+                                            <form action="update_status.php" method="POST">
                                                 <td>
-                                                    PKT001
-                                                    <input type="hidden" name="id_order" value="PKT001">
+                                                    <?= 'PKT' . str_pad($id_order, 3, '0', STR_PAD_LEFT) ?>
+                                                    <input type="hidden" name="id_order" value="<?= $id_order ?>">
                                                 </td>
-                                                <td>Joko</td>
-                                                <td>Budi</td>
-                                                <td>-</td>
+                                                <td><?= htmlspecialchars($kurir_jemput) ?></td>
+                                                <td><?= htmlspecialchars($kurir_antar) ?></td>
+                                                <td><?= htmlspecialchars($resi) ?></td>
                                                 <td>
-                                                    <select name="status" class="form-control form-control-sm">
-                                                        <option value="Menunggu Penjemputan" selected>Menunggu
-                                                            Penjemputan</option>
-                                                        <option value="Sudah Dijemput">Sudah Dijemput</option>
-                                                        <option value="Sedang Transit">Sedang Transit</option>
-                                                        <option value="Berhasil Dikirim">Berhasil Dikirim</option>
-                                                    </select>
+                                                    <!-- Menampilkan status langsung tanpa dropdown -->
+                                                    <?= htmlspecialchars($status) ?>
                                                 </td>
-                                                <td>16 Mei 2025, 10:00</td>
+                                                <td><?= $waktu_konfirmasi ?></td>
                                                 <td class="d-flex justify-content-between">
-                                                    <a href="detail_orderan.php?id=PKT001"
+                                                    <a href="detail_order.php?id=<?= $id_order ?>"
                                                         class="btn btn-info btn-sm mr-1">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <button type="submit" class="btn btn-success btn-sm">
-                                                        <i class="fas fa-save"></i>
-                                                    </button>
-                                                </td>
-                                            </form>
-                                        </tr>
-
-                                        <tr>
-                                            <form action="#" method="POST">
-                                                <td>
-                                                    PKT002
-                                                    <input type="hidden" name="id_order" value="PKT002">
-                                                </td>
-                                                <td>Toni</td>
-                                                <td>Ani</td>
-                                                <td>-</td>
-                                                <td>
-                                                    <select name="status" class="form-control form-control-sm">
-                                                        <option value="Menunggu Penjemputan">Menunggu Penjemputan
-                                                        </option>
-                                                        <option value="Sudah Dijemput">Sudah Dijemput</option>
-                                                        <option value="Sedang Transit" selected>Sedang Transit</option>
-                                                        <option value="Berhasil Dikirim">Berhasil Dikirim</option>
-                                                    </select>
-                                                </td>
-                                                <td>16 Mei 2025, 13:20</td>
-                                                <td class="d-flex justify-content-between">
-                                                    <a href="detail_orderan.php?id=PKT002"
-                                                        class="btn btn-info btn-sm mr-1">
-                                                        <i class="fas fa-eye"></i>
+                                                    <a href="edit_status.php?id=<?= $id_order ?>"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-edit"></i> Edit
                                                     </a>
-                                                    <button type="submit" class="btn btn-success btn-sm">
-                                                        <i class="fas fa-save"></i>
-                                                    </button>
-                                                </td>
-                                            </form>
-                                        </tr>
-
-                                        <tr>
-                                            <form action="#" method="POST">
-                                                <td>
-                                                    PKT003
-                                                    <input type="hidden" name="id_order" value="PKT003">
-                                                </td>
-                                                <td>Sari</td>
-                                                <td>Reza</td>
-                                                <td>-</td>
-                                                <td>
-                                                    <select name="status" class="form-control form-control-sm" disabled>
-                                                        <option value="Berhasil Dikirim" selected>Berhasil Dikirim
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>15 Mei 2025, 17:45</td>
-                                                <td class="d-flex justify-content-between">
-                                                    <a href="detail_orderan.php?id=PKT003"
-                                                        class="btn btn-info btn-sm mr-1">
-                                                        <i class="fas fa-eye"></i>
+                                                    <a href="hapus_order.php?id=<?= $id_order ?>"
+                                                        class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i> Hapus
                                                     </a>
-                                                    <button type="submit" class="btn btn-secondary btn-sm" disabled>
-                                                        <i class="fas fa-check-circle"></i>
-                                                    </button>
                                                 </td>
+
                                             </form>
                                         </tr>
-
+                                        <?php endwhile; ?>
                                     </tbody>
                                 </table>
                             </div>

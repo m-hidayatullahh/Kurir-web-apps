@@ -1,4 +1,10 @@
-<?php include 'head.php';?>
+<?php include 'admin-kurir/config/koneksi.php'; ?>
+
+
+<!DOCTYPE html>
+<html lang="id">
+
+<?php include 'head.php'; ?>
 
 <section id="form_pengiriman" class="form_pengiriman section">
     <div class="container section-title" data-aos="fade-up">
@@ -14,7 +20,6 @@
             aman, dan terpercaya untuk kebutuhan Anda, baik individu maupun
             bisnis.
         </p>
-
     </div>
     <main class="container py-5">
         <form action="proses_order.php" method="POST" enctype="multipart/form-data" class="card shadow p-4 border-0">
@@ -26,17 +31,30 @@
             </div>
             <div class="mb-3">
                 <label for="kabupaten_pengirim" class="form-label" style="color: #333;">Kabupaten Pengirim</label>
-                <select name="kabupaten_pengirim" id="kabupaten_pengirim" class="form-control"
-                    style="border: 1.5px solid #333;" required>
+                <select name="kabupaten_pengirim" class="form-control" required>
                     <option value="">Pilih Kabupaten</option>
-                    <option value="Lombok Barat">Lombok Barat</option>
-                    <option value="Lombok Tengah">Lombok Tengah</option>
-                    <option value="Lombok Timur">Lombok Timur</option>
-                    <option value="Lombok Utara">Lombok Utara</option>
-                    <option value="Kota Mataram">Kota Mataram</option>
+                    <?php
+    $result = $conn->query("SELECT  nama_kabupaten FROM tbl_kabupaten");
+    while ($row = $result->fetch_assoc()) {
+        echo "<option value='{$row['nama_kabupaten']}'>{$row['nama_kabupaten']}</option>";
+
+    }
+    ?>
                 </select>
             </div>
-
+            <div class="mb-3">
+                <label for="kecamatan_pengirim" class="form-label" style="color: #333;">Kecamatan Pengirim</label>
+                <!-- Kecamatan Pengirim -->
+                <select name="kecamatan_pengirim" class="form-control" required>
+                    <option value="">Pilih Kecamatan</option>
+                    <?php
+    $result = $conn->query("SELECT nama_kecamatan FROM tbl_kecamatan");
+    while ($row = $result->fetch_assoc()) {
+        echo "<option value='{$row['nama_kecamatan']}'>{$row['nama_kecamatan']}</option>";
+    }
+    ?>
+                </select>
+            </div>
             <div class="mb-3">
                 <label for="alamat_pengirim" class="form-label" style="color: #333;">Alamat Lengkap Pengirim</label>
                 <textarea name="alamat_pengirim" id="alamat_pengirim" class="form-control"
@@ -48,15 +66,16 @@
                     style="border: 1.5px solid #333;" required>
             </div>
             <div class="mb-3">
-                <label for="bank_pengirim" class="form-label" style="color: #333;">Bank Pengirim</label>
-                <select name="bank_pengirim" id="bank_pengirim" class="form-control" style="border: 1.5px solid #333;"
-                    required>
+                <label for="nama_bank" class="form-label" style="color: #333;">Bank Pengirim</label>
+                <!-- Bank -->
+                <select name="nama_bank" class="form-control" required>
                     <option value="">Pilih Bank</option>
-                    <option value="BRI">BRI</option>
-                    <option value="BNI">BNI</option>
-                    <option value="BCA">BCA</option>
-                    <option value="Mandiri">Mandiri</option>
-                    <option value="SeaBank">Lainnya</option>
+                    <?php
+    $result = $conn->query("SELECT nama_bank FROM tbl_bank");
+    while ($row = $result->fetch_assoc()) {
+        echo "<option value='{$row['nama_bank']}'>{$row['nama_bank']}</option>";
+    }
+    ?>
                 </select>
             </div>
             <div class="mb-3">
@@ -75,30 +94,29 @@
             </div>
             <div class="mb-3">
                 <label for="kabupaten_penerima" class="form-label" style="color: #333;">Kabupaten Penerima</label>
-                <select name="kabupaten_penerima" id="kabupaten_penerima" class="form-control"
-                    style="border: 1.5px solid #333;" required>
+                <select name="kabupaten_penerima" class="form-control" required>
                     <option value="">Pilih Kabupaten</option>
-                    <option value="Lombok Barat">Lombok Barat</option>
-                    <option value="Lombok Tengah">Lombok Tengah</option>
-                    <option value="Lombok Timur">Lombok Timur</option>
-                    <option value="Lombok Utara">Lombok Utara</option>
-                    <option value="Kota Mataram">Kota Mataram</option>
+                    <?php
+    $result = $conn->query("SELECT nama_kabupaten FROM tbl_kabupaten");
+    while ($row = $result->fetch_assoc()) {
+       echo "<option value='{$row['nama_kabupaten']}'>{$row['nama_kabupaten']}</option>";
+    }
+    ?>
                 </select>
             </div>
 
             <div class="mb-3">
                 <label for="kecamatan_penerima" class="form-label" style="color: #333;">Kecamatan Penerima</label>
-                <select name="kecamatan_penerima" id="kecamatan_penerima" class="form-control"
-                    style="border: 1.5px solid #333;" required>
+                <select name="kecamatan_penerima" class="form-control" required>
                     <option value="">Pilih Kecamatan</option>
-                    <option value="Pujut">Pujut</option>
-                    <option value="Praya">Praya</option>
-                    <option value="Jonggat">Jonggat</option>
-                    <option value="Batukliang">Batukliang</option>
-                    <option value="Kopang">Kopang</option>
+                    <?php
+    $result = $conn->query("SELECT nama_kecamatan FROM tbl_kecamatan");
+    while ($row = $result->fetch_assoc()) {
+       echo "<option value='{$row['nama_kecamatan']}'>{$row['nama_kecamatan']}</option>";
+    }
+    ?>
                 </select>
             </div>
-
             <div class="mb-3">
                 <label for="alamat_penerima" class="form-label" style="color: #333;">Alamat Lengkap Penerima</label>
                 <textarea name="alamat_penerima" id="alamat_penerima" class="form-control"
