@@ -152,10 +152,12 @@
                     style="border: 1.5px solid #333;">
             </div>
             <div class="mb-3">
-                <label for="bukti_transfer" class="form-label" style="color: #333;">Upload Bukti Transfer (Jika Bukan
-                    COD)</label>
-                <input type="file" name="bukti_transfer" id="bukti_transfer" class="form-control"
-                    style="border: 1.5px solid #333;">
+                <label for="status_pembayaran" class="form-label" style="color: #333;">Status Pembayaran</label>
+                <select name="status_pembayaran" id="status_pembayaran" class="form-control"
+                    style="border: 1.5px solid #333;" required>
+                    <option value="COD">COD</option>
+                    <option value="Lunas">Lunas</option>
+                </select>
             </div>
 
             <button type="submit" class="btn"

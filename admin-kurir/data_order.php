@@ -108,12 +108,6 @@ include 'config/koneksi.php';
                                                                     class="form-control" required
                                                                     placeholder="Masukkan tarif ongkir">
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="nomor_resi">Nomor Resi</label>
-                                                                <input type="text" name="nomor_resi"
-                                                                    class="form-control" required
-                                                                    placeholder="Masukkan nomor resi">
-                                                            </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="submit" name="konfirmasi"

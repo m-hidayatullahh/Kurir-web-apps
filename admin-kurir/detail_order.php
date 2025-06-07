@@ -136,19 +136,8 @@ $order = $result->fetch_assoc();
                                             <td>Rp <?= number_format($order['harga_barang'], 0, ',', '.') ?></td>
                                         </tr>
                                         <tr>
-                                            <th>Metode Bayar</th>
-                                            <td>Transfer</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Bukti Transfer</th>
-                                            <td>
-                                                <?php if (!empty($order['bukti_transfer'])): ?>
-                                                <a href="<?= htmlspecialchars($order['bukti_transfer']) ?>"
-                                                    target="_blank" class="btn btn-sm btn-success">Lihat Bukti</a>
-                                                <?php else: ?>
-                                                <span class="text-muted">Belum ada bukti</span>
-                                                <?php endif; ?>
-                                            </td>
+                                            <th>Status Pembayaran</th>
+                                            <td>COD</td>
                                         </tr>
                                         <tr>
                                             <th>Waktu Order</th>

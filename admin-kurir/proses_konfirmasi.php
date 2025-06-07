@@ -6,7 +6,6 @@ if (isset($_POST['konfirmasi'])) {
     $id_kurir_jemput = $_POST['id_kurir_jemput'];
     $id_kurir_antar  = $_POST['id_kurir_antar'];
     $tarif_ongkir    = $_POST['tarif_ongkir'];
-    $nomor_resi      = $_POST['nomor_resi'];
     $waktu_konfirmasi = date('Y-m-d H:i:s');
 
     // Ambil nama kurir jemput
@@ -26,7 +25,6 @@ $query = "UPDATE tbl_order_masuk SET
     kurir_jemput = '$kurir_jemput',
     kurir_antar = '$kurir_antar',
     tarif_ongkir = '$tarif_ongkir',
-    resi = '$nomor_resi',
     status_order = 'terkonfirmasi',
     waktu_konfirmasi = '$waktu_konfirmasi'
 WHERE id_order_masuk = '$id_order'";

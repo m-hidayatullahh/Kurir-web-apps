@@ -26,7 +26,7 @@
 
     <!-- Nav Item - Data Pengiriman -->
     <li class="nav-item">
-        <a class="nav-link" href="data-order.php">
+        <a class="nav-link" href="data_order.php">
             <i class="fas fa-truck-loading"></i>
             <span>Data Pengiriman</span></a>
     </li>
@@ -60,11 +60,11 @@
     </li>
 
     <!-- Nav Item - Akun Kurir -->
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link" href="akun_kurir.php">
             <i class="fas fa-user-cog"></i>
             <span>Akun Kurir</span></a>
-    </li>
+    </li> -->
 
     <!-- Divider -->
     <hr class="sidebar-divider" />
