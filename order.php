@@ -34,25 +34,23 @@
                 <select name="kabupaten_pengirim" class="form-control" required>
                     <option value="">Pilih Kabupaten</option>
                     <?php
-    $result = $conn->query("SELECT  nama_kabupaten FROM tbl_kabupaten");
-    while ($row = $result->fetch_assoc()) {
-        echo "<option value='{$row['nama_kabupaten']}'>{$row['nama_kabupaten']}</option>";
-
-    }
-    ?>
+            $result = $conn->query("SELECT id_kabupaten, nama_kabupaten FROM tbl_kabupaten");
+            while ($row = $result->fetch_assoc()) {
+                echo "<option value='{$row['id_kabupaten']}'>{$row['nama_kabupaten']}</option>";
+            }
+            ?>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="kecamatan_pengirim" class="form-label" style="color: #333;">Kecamatan Pengirim</label>
-                <!-- Kecamatan Pengirim -->
                 <select name="kecamatan_pengirim" class="form-control" required>
                     <option value="">Pilih Kecamatan</option>
                     <?php
-    $result = $conn->query("SELECT nama_kecamatan FROM tbl_kecamatan");
-    while ($row = $result->fetch_assoc()) {
-        echo "<option value='{$row['nama_kecamatan']}'>{$row['nama_kecamatan']}</option>";
-    }
-    ?>
+            $result = $conn->query("SELECT id_kecamatan, nama_kecamatan FROM tbl_kecamatan");
+            while ($row = $result->fetch_assoc()) {
+                echo "<option value='{$row['id_kecamatan']}'>{$row['nama_kecamatan']}</option>";
+            }
+            ?>
                 </select>
             </div>
             <div class="mb-3">

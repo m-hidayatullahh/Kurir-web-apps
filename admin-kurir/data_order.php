@@ -35,11 +35,25 @@ include 'config/koneksi.php';
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $sql = "SELECT * FROM tbl_order_masuk ORDER BY id_order_masuk DESC";
+                                        // Query untuk mengambil data dari beberapa tabel yang sudah dinormalisasi
+                                        $sql = "
+                                            SELECT 
+                                                p.id_pengiriman,
+                                                p.id_pengirim,
+                                                p.id_penerima,
+                                                p.kurir_jemput,
+                                                p.kurir_antar,
+                                                pg.nama_pengirim,
+                                                pn.nama_penerima
+                                            FROM tbl_pengiriman p
+                                            LEFT JOIN tbl_pengirim pg ON p.id_pengirim = pg.id_pengirim
+                                            LEFT JOIN tbl_penerima pn ON p.id_penerima = pn.id_penerima
+                                            ORDER BY p.id_pengiriman DESC
+                                        ";
                                         $query = $conn->query($sql);
 
                                         while ($row = $query->fetch_assoc()):
-                                        $id = $row['id_order_masuk'];
+                                        $id = $row['id_pengiriman'];
                                         $kode = 'ORD' . str_pad($id, 3, '0', STR_PAD_LEFT);
                                         ?>
                                         <tr>

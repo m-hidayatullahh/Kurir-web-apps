@@ -39,17 +39,29 @@
                                         // Include connection to the database
                                         include 'config/koneksi.php';
 
-                                        // Query to fetch data from the database
-                                        $sql = "SELECT * FROM tbl_order_masuk ORDER BY id_order_masuk DESC";
+                                        // Query untuk mengambil data yang sudah dinormalisasi dengan JOIN
+                                        $sql = "
+                                            SELECT 
+                                                o.id_pengiriman, 
+                                                k1.nama_kurir AS kurir_jemput, 
+                                                k2.nama_kurir AS kurir_antar, 
+                                                o.resi, 
+                                                o.status_order, 
+                                                o.waktu_konfirmasi
+                                            FROM tbl_pengiriman o
+                                            LEFT JOIN tbl_data_kurir k1 ON o.kurir_jemput = k1.id_kurir
+                                            LEFT JOIN tbl_data_kurir k2 ON o.kurir_antar = k2.id_kurir
+                                            ORDER BY o.id_pengiriman DESC";
+                                        
                                         $query = $conn->query($sql);
 
-                                        // Loop through the results and display them
+                                        // Loop melalui hasil query dan menampilkan data
                                         while ($row = $query->fetch_assoc()):
-                                            $id_order = $row['id_order_masuk'];
+                                            $id_order = $row['id_pengiriman'];
                                             $kurir_jemput = $row['kurir_jemput'];
                                             $kurir_antar = $row['kurir_antar'];
                                             $resi = $row['resi'];
-                                            $status = ucfirst($row['status_order']); // Make status more readable
+                                            $status = ucfirst($row['status_order']); // Membuat status lebih mudah dibaca
                                             $waktu_konfirmasi = $row['waktu_konfirmasi'] ? date('d M Y, H:i', strtotime($row['waktu_konfirmasi'])) : '-';
                                         ?>
                                         <tr>

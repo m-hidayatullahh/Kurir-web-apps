@@ -7,7 +7,7 @@ if (isset($_POST['id_order'])) {
     $id_order = $_POST['id_order'];
 
     // Ambil path file dari DB
-    $query = "SELECT bukti_transfer_admin FROM tbl_order_masuk WHERE id_order_masuk = '$id_order'";
+    $query = "SELECT bukti_transfer_admin FROM tbl_pengiriman WHERE id_pengiriman = '$id_order'";
     $result = mysqli_query($conn, $query);
     if ($row = mysqli_fetch_assoc($result)) {
         if (!empty($row['bukti_transfer_admin'])) {
@@ -17,11 +17,9 @@ if (isset($_POST['id_order'])) {
     }
 }
 
-
 if (isset($_POST['uploadBukti'])) {
     $id_order = $_POST['id_order'];
- $target_dir = "img/bukti_tf_admin/";
-
+    $target_dir = "img/bukti_tf_admin/";
 
     // Cek apakah file diupload
     if (!empty($_FILES['bukti_transfer_admin']['name'])) {
@@ -34,7 +32,7 @@ if (isset($_POST['uploadBukti'])) {
         if (in_array($file_type, $allowed_types)) {
             if (move_uploaded_file($_FILES["bukti_transfer_admin"]["tmp_name"], $target_file)) {
                 // Simpan ke DB
-                $sql = "UPDATE tbl_order_masuk SET bukti_transfer_admin = '$target_file' WHERE id_order_masuk = '$id_order'";
+                $sql = "UPDATE tbl_pengiriman SET bukti_transfer_admin = '$target_file' WHERE id_pengiriman = '$id_order'";
                 if (mysqli_query($conn, $sql)) {
                     echo "<script>alert('Bukti transfer berhasil diupload!'); window.location.href='pembayaran.php';</script>";
                 } else {
@@ -51,9 +49,6 @@ if (isset($_POST['uploadBukti'])) {
     }
 }
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="id">
@@ -88,19 +83,25 @@ if (isset($_POST['uploadBukti'])) {
                                                 onchange="isiDataPenerima()">
                                                 <option value="">-- Pilih --</option>
                                                 <?php
-    $query = "SELECT id_order_masuk, nama_penerima, bank_pengirim, no_rekening FROM tbl_order_masuk";
-    $result = mysqli_query($conn, $query);
-    while ($row = mysqli_fetch_assoc($result)) {
-        echo '<option value="' . $row['id_order_masuk'] . '" 
-            data-nama="' . htmlspecialchars($row['nama_penerima']) . '" 
-            data-bank="' . htmlspecialchars($row['bank_pengirim']) . '" 
-            data-norek="' . htmlspecialchars($row['no_rekening']) . '">
-            ORDER #' . $row['id_order_masuk'] . '
+$query = "SELECT id_pengiriman, id_penerima FROM tbl_pengiriman";
+$result = mysqli_query($conn, $query);
+while ($row = mysqli_fetch_assoc($result)) {
+    $id_penerima = $row['id_penerima'];
+
+    // Ambil nama penerima dari tabel tbl_penerima
+    $query_penerima = "SELECT nama_penerima, alamat_penerima, hp_penerima FROM tbl_penerima WHERE id_penerima = '$id_penerima'";
+    $result_penerima = mysqli_query($conn, $query_penerima);
+    if ($row_penerima = mysqli_fetch_assoc($result_penerima)) {
+        echo '<option value="' . $row['id_pengiriman'] . '" 
+            data-nama="' . htmlspecialchars($row_penerima['nama_penerima']) . '" 
+            data-alamat="' . htmlspecialchars($row_penerima['alamat_penerima']) . '" 
+            data-hp="' . htmlspecialchars($row_penerima['hp_penerima']) . '">
+            ORDER #' . $row['id_pengiriman'] . '
         </option>';
     }
-    ?>
+}
+?>
                                             </select>
-
                                         </div>
 
                                         <div class="form-group">
@@ -108,18 +109,17 @@ if (isset($_POST['uploadBukti'])) {
                                             <input type="text" class="form-control" id="nama_penerima" readonly>
                                         </div>
                                         <div class="form-group">
-                                            <label for="bank">Nama Bank</label>
-                                            <input type="text" class="form-control" id="bank" readonly>
+                                            <label for="alamat">Alamat Penerima</label>
+                                            <input type="text" class="form-control" id="alamat" readonly>
                                         </div>
                                         <div class="form-group">
-                                            <label for="norek">Nomor Rekening</label>
-                                            <input type="text" class="form-control" id="norek" readonly>
+                                            <label for="hp">Nomor HP Penerima</label>
+                                            <input type="text" class="form-control" id="hp" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label for="bukti_transfer">Bukti Transfer</label>
                                             <input type="file" class="form-control-file" id="bukti_transfer"
                                                 name="bukti_transfer_admin" accept="image/*">
-
                                         </div>
                                         <button type="submit" name="uploadBukti" class="btn btn-success">Upload</button>
 
@@ -139,10 +139,9 @@ if (isset($_POST['uploadBukti'])) {
 $preview_file = 'img/bukti_tf_admin/';
 $preview_status = 'Belum upload';
 
-
 if (!empty($_POST['id_order'])) {
     $id_order = $_POST['id_order'];
-    $query = "SELECT bukti_transfer_admin FROM tbl_order_masuk WHERE id_order_masuk = '$id_order'";
+    $query = "SELECT bukti_transfer_admin FROM tbl_pengiriman WHERE id_pengiriman = '$id_order'";
     $result = mysqli_query($conn, $query);
     if ($row = mysqli_fetch_assoc($result)) {
         if (!empty($row['bukti_transfer_admin'])) {
@@ -180,12 +179,12 @@ if (!empty($_POST['id_order'])) {
     function isiDataPenerima() {
         const selected = document.getElementById("id_order").selectedOptions[0];
         const nama = selected.getAttribute("data-nama");
-        const bank = selected.getAttribute("data-bank");
-        const norek = selected.getAttribute("data-norek");
+        const alamat = selected.getAttribute("data-alamat");
+        const hp = selected.getAttribute("data-hp");
 
         document.getElementById("nama_penerima").value = nama || '';
-        document.getElementById("bank").value = bank || '';
-        document.getElementById("norek").value = norek || '';
+        document.getElementById("alamat").value = alamat || '';
+        document.getElementById("hp").value = hp || '';
     }
     </script>
 </body>
