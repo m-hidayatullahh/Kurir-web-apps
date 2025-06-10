@@ -3,7 +3,7 @@
 
 <?php include 'head.php'; ?>
 
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
 <body class="index-page">
 
